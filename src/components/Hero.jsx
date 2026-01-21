@@ -1,11 +1,16 @@
 import { Link } from "react-router-dom";
 import "../styles/hero.css";
+import logo from "../assets/logo.svg";
 
 export default function Hero() {
   return (
     <section className="hero">
       <header className="hero-header">
-        <h3 className="logo">Teknolojik Yemekler</h3>
+        <img
+                src={logo}
+                alt="Teknolojik Yemekler"
+                className="success-logo"
+              />
       </header>
 
       <div className="hero-content">

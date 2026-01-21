@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../styles/order.css";
 import Header from "../components/Header";
+import { useHistory } from "react-router-dom";
 
 const malzemelerListesi = [
   "Pepperoni",
@@ -27,11 +28,32 @@ export default function Order() {
     notlar: "",
     adet: 1,
   });
+  const history = useHistory();
+
+
+  const isFormValid =
+  formData.boyut &&
+  formData.hamur &&
+  formData.malzemeler.length >= 4 &&
+  formData.malzemeler.length <= 10;
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+
+ const handleSubmit = (e) => {
+  e.preventDefault();
+
+  if (!isFormValid) return;
+
+  console.log("Sipariş gönderildi:", formData);
+
+  history.push("/success");
+};
+
+
 
   const handleMalzemeChange = (malzeme) => {
     setFormData((prev) => {
@@ -68,7 +90,7 @@ export default function Order() {
         hazırlanmıştır.
       </p>
 
-      <form>
+      <form onSubmit={handleSubmit}>
         {/* BOYUT */}
         <section>
           <h4>Boyut Seç *</h4>
@@ -140,9 +162,14 @@ export default function Order() {
           <p className="total">Toplam: {85.5 * formData.adet}₺</p>
         </section>
 
-        <button className="submit" type="submit">
-          SİPARİŞ VER
+        <button
+            className="submit"
+            type="submit"
+            disabled={!isFormValid}
+        >
+            SİPARİŞ VER
         </button>
+
       </form>
     </main>
     </>

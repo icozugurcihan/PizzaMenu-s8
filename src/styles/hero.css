@@ -16,14 +16,10 @@
   margin-bottom: 60px;
 }
 
-.logo {
-  font-family: "Roboto Condensed", sans-serif;
-  font-size: 20px;
-}
 
 .hero-content h1 {
   font-family: "Barlow", sans-serif;
-  font-size: 48px;
+  font-size: 72px;
   font-weight: 300;
   line-height: 1.2;
   margin-bottom: 30px;
@@ -34,7 +30,7 @@
   border: none;
   border-radius: 20px;
   padding: 12px 32px;
-  font-size: 14px;
+  font-size: 18px;
   font-weight: bold;
   cursor: pointer;
 }
