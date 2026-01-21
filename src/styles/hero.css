@@ -1,0 +1,44 @@
+.hero {
+  min-height: 100vh;
+  background-image: url("../assets/home-banner.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  color: white;
+  text-align: center;
+  padding: 40px 20px;
+  position: relative;
+}
+
+
+.hero-header {
+  margin-bottom: 60px;
+}
+
+.logo {
+  font-family: "Roboto Condensed", sans-serif;
+  font-size: 20px;
+}
+
+.hero-content h1 {
+  font-family: "Barlow", sans-serif;
+  font-size: 48px;
+  font-weight: 300;
+  line-height: 1.2;
+  margin-bottom: 30px;
+}
+
+.hero-button {
+  background-color: #fdc913;
+  border: none;
+  border-radius: 20px;
+  padding: 12px 32px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.hero-button:hover {
+  opacity: 0.9;
+}

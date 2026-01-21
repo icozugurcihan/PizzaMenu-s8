@@ -1,0 +1,44 @@
+.order {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.ingredients {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.quantity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.quantity button {
+  background: #fdc913;
+  width: 40px;
+  height: 40px;
+}
+
+.summary {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.total {
+  font-weight: bold;
+  color: #ce2829;
+}
+
+.submit {
+  width: 100%;
+  background: #fdc913;
+  border: none;
+  padding: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}

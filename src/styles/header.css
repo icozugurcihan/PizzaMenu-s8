@@ -1,0 +1,21 @@
+.app-header {
+  background-color: #ce2829;
+  color: white;
+  text-align: center;
+  padding: 40px 20px 30px;
+}
+
+.app-logo {
+  font-family: "Roboto Condensed", sans-serif;
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.breadcrumb {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.breadcrumb span {
+  margin: 0 6px;
+}
