@@ -24,3 +24,17 @@
   letter-spacing: 2px;
   line-height: 1.2;
 }
+
+.order-summary {
+  margin-top: 40px;
+  background: #faf7f2;
+  color: #292929;
+  padding: 20px 30px;
+  border-radius: 8px;
+  width: 320px;
+  text-align: left;
+}
+
+.order-summary ul {
+  padding-left: 20px;
+}

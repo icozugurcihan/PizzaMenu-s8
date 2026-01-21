@@ -2,6 +2,7 @@ import { useState } from "react";
 import "../styles/order.css";
 import Header from "../components/Header";
 import { useHistory } from "react-router-dom";
+import axios from "axios";
 
 const malzemelerListesi = [
   "Pepperoni",
@@ -19,41 +20,30 @@ const malzemelerListesi = [
   "Kabak",
 ];
 
-export default function Order() {
+const BASE_PRICE = 85.5;
+const EXTRA_PRICE = 5;
+
+export default function Order({ setOrder }) {
   const [formData, setFormData] = useState({
-    isim: "",
     boyut: "",
     hamur: "",
     malzemeler: [],
     notlar: "",
     adet: 1,
   });
+
   const history = useHistory();
 
-
   const isFormValid =
-  formData.boyut &&
-  formData.hamur &&
-  formData.malzemeler.length >= 4 &&
-  formData.malzemeler.length <= 10;
-
+    formData.boyut &&
+    formData.hamur &&
+    formData.malzemeler.length >= 4 &&
+    formData.malzemeler.length <= 10;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-
- const handleSubmit = (e) => {
-  e.preventDefault();
-
-  if (!isFormValid) return;
-
-  console.log("Sipariş gönderildi:", formData);
-
-  history.push("/success");
-};
-
-
 
   const handleMalzemeChange = (malzeme) => {
     setFormData((prev) => {
@@ -77,101 +67,171 @@ export default function Order() {
     setFormData({ ...formData, adet: formData.adet + 1 });
   };
 
+  const toplamFiyat =
+    (BASE_PRICE + formData.malzemeler.length * EXTRA_PRICE) *
+    formData.adet;
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!isFormValid) return;
+
+    const payload = {
+      boyut: formData.boyut,
+      hamur: formData.hamur,
+      malzemeler: formData.malzemeler,
+      notlar: formData.notlar,
+      adet: formData.adet,
+      toplamFiyat,
+    };
+
+    try {
+      const response = await axios.post(
+        "https://reqres.in/api/pizza",
+        payload,
+        {
+          headers: { "x-api-key": "reqres-free-v1" },
+        }
+      );
+
+      setOrder(response.data);
+      history.push("/success");
+    } catch (error) {
+      const fallbackOrder = {
+        ...payload,
+        id: "offline-order",
+        createdAt: new Date().toISOString(),
+      };
+
+      setOrder(fallbackOrder);
+      history.push("/success");
+    }
+  };
+
   return (
     <>
-    <Header/>
-    <main className="order">
-      <h2>Position Absolute Acı Pizza</h2>
-      <p className="price">85.50₺</p>
+      <Header />
 
-      <p className="description">
-        Frontend Dev olarak hala position:absolute kullanıyorsan bu çok acı
-        pizzadan sana göre. Pizza, domates, peynirle geliştirici malzemelerle
-        hazırlanmıştır.
-      </p>
+      <main className="order">
+        <h2>Position Absolute Acı Pizza</h2>
+        <p className="price">{BASE_PRICE}₺</p>
 
-      <form onSubmit={handleSubmit}>
-        {/* BOYUT */}
-        <section>
-          <h4>Boyut Seç *</h4>
-          {["Küçük", "Orta", "Büyük"].map((boyut) => (
-            <label key={boyut}>
-              <input
-                type="radio"
-                name="boyut"
-                value={boyut}
-                checked={formData.boyut === boyut}
-                onChange={handleChange}
-              />
-              {boyut}
-            </label>
-          ))}
-        </section>
+        <p className="description">
+          Frontend Dev olarak hala position:absolute kullanıyorsan bu çok acı
+          pizzadan sana göre. Pizza, domates, peynirle geliştirici malzemelerle
+          hazırlanmıştır.
+        </p>
 
-        {/* HAMUR */}
-        <section>
-          <h4>Hamur Seç *</h4>
-          <select name="hamur" value={formData.hamur} onChange={handleChange}>
-            <option value="">Hamur Kalınlığı</option>
-            <option value="İnce">İnce</option>
-            <option value="Orta">Orta</option>
-            <option value="Kalın">Kalın</option>
-          </select>
-        </section>
+        <form onSubmit={handleSubmit}>
+          <div className="order-layout">
+            {/* SOL FORM */}
+            <div className="order-form">
+              {/* BOYUT */}
+              <section>
+                <h4>Boyut Seç *</h4>
+                <div className="size-options">
+                  {[
+                    { label: "S", value: "Küçük" },
+                    { label: "M", value: "Orta" },
+                    { label: "L", value: "Büyük" },
+                  ].map((b) => (
+                    <label
+                      key={b.value}
+                      className={`size-btn ${
+                        formData.boyut === b.value ? "active" : ""
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="boyut"
+                        value={b.value}
+                        checked={formData.boyut === b.value}
+                        onChange={handleChange}
+                      />
+                      {b.label}
+                    </label>
+                  ))}
+                </div>
+              </section>
 
-        {/* MALZEMELER */}
-        <section>
-          <h4>Ek Malzemeler</h4>
-          <p>En Fazla 10 malzeme seçebilirsiniz. 5₺</p>
+              {/* HAMUR */}
+              <section>
+                <h4>Hamur Seç *</h4>
+                <select
+                  name="hamur"
+                  value={formData.hamur}
+                  onChange={handleChange}
+                >
+                  <option value="">Hamur Kalınlığı</option>
+                  <option value="İnce">İnce</option>
+                  <option value="Orta">Orta</option>
+                  <option value="Kalın">Kalın</option>
+                </select>
+              </section>
 
-          <div className="ingredients">
-            {malzemelerListesi.map((malzeme) => (
-              <label key={malzeme}>
-                <input
-                  type="checkbox"
-                  checked={formData.malzemeler.includes(malzeme)}
-                  onChange={() => handleMalzemeChange(malzeme)}
+              {/* MALZEMELER */}
+              <section>
+                <h4>Ek Malzemeler</h4>
+                <p>En Fazla 10 malzeme seçebilirsiniz. 5₺</p>
+
+                <div className="ingredients">
+                  {malzemelerListesi.map((malzeme) => (
+                    <label key={malzeme}>
+                      <input
+                        type="checkbox"
+                        checked={formData.malzemeler.includes(malzeme)}
+                        onChange={() => handleMalzemeChange(malzeme)}
+                      />
+                      {malzeme}
+                    </label>
+                  ))}
+                </div>
+              </section>
+
+              {/* NOT */}
+              <section>
+                <h4>Sipariş Notu</h4>
+                <textarea
+                  name="notlar"
+                  placeholder="Siparişine eklemek istediğin bir not var mı?"
+                  value={formData.notlar}
+                  onChange={handleChange}
                 />
-                {malzeme}
-              </label>
-            ))}
+              </section>
+
+              {/* ADET */}
+              <section className="quantity">
+                <button type="button" onClick={adetAzalt}>-</button>
+                <span>{formData.adet}</span>
+                <button type="button" onClick={adetArtir}>+</button>
+              </section>
+            </div>
+
+            {/* SAĞ ÖZET */}
+            <div className="order-summary-box">
+              <h4>Sipariş Toplamı</h4>
+
+              <p>
+                Seçimler:{" "}
+                <strong>
+                  {formData.malzemeler.length * EXTRA_PRICE}₺
+                </strong>
+              </p>
+
+              <p className="total">
+                Toplam: <strong>{toplamFiyat}₺</strong>
+              </p>
+
+              <button
+                className="submit"
+                type="submit"
+                disabled={!isFormValid}
+              >
+                SİPARİŞ VER
+              </button>
+            </div>
           </div>
-        </section>
-
-        {/* NOT */}
-        <section>
-          <h4>Sipariş Notu</h4>
-          <textarea
-            name="notlar"
-            placeholder="Siparişine eklemek istediğin bir not var mı?"
-            value={formData.notlar}
-            onChange={handleChange}
-          />
-        </section>
-
-        {/* ADET */}
-        <section className="quantity">
-          <button type="button" onClick={adetAzalt}>-</button>
-          <span>{formData.adet}</span>
-          <button type="button" onClick={adetArtir}>+</button>
-        </section>
-
-        {/* ÖZET */}
-        <section className="summary">
-          <p>Seçimler: {formData.malzemeler.length * 5}₺</p>
-          <p className="total">Toplam: {85.5 * formData.adet}₺</p>
-        </section>
-
-        <button
-            className="submit"
-            type="submit"
-            disabled={!isFormValid}
-        >
-            SİPARİŞ VER
-        </button>
-
-      </form>
-    </main>
+        </form>
+      </main>
     </>
   );
 }

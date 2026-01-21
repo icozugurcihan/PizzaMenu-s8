@@ -1,7 +1,15 @@
 import "../styles/success.css";
 import logo from "../assets/logo.svg";
 
-export default function Success() {
+export default function Success({ order }) {
+  if (!order) {
+    return (
+      <main className="success">
+        <h2>Henüz bir sipariş yok</h2>
+      </main>
+    );
+  }
+
   return (
     <main className="success">
       <img
@@ -14,6 +22,17 @@ export default function Success() {
         TEBRİKLER! <br />
         SİPARİŞİNİZ ALINDI!
       </h1>
+
+      <div className="order-summary">
+        <p><strong>Boyut:</strong> {order.boyut}</p>
+        <p><strong>Hamur:</strong> {order.hamur}</p>
+        <p><strong>Malzemeler:</strong></p>
+        <ul>
+          {order.malzemeler.map((m) => (
+            <li key={m}>{m}</li>
+          ))}
+        </ul>
+      </div>
     </main>
   );
 }
